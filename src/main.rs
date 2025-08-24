@@ -1,9 +1,10 @@
-use crossterm::event::{self, Event, KeyCode, KeyEventKind};
+use crossterm::event::{self, Event, KeyCode, KeyEvent, KeyEventKind, KeyModifiers};
 use ratatui::{Frame, text::Text};
 #[derive(PartialEq)]
 enum InputCommands {
     ContinueAction,
     Quit,
+    StartMathExam,
 }
 fn main() -> std::io::Result<()> {
     let mut terminal = ratatui::init();
@@ -23,6 +24,9 @@ fn run(terminal: &mut ratatui::DefaultTerminal) -> std::io::Result<()> {
                 if result_here == InputCommands::ContinueAction {
                     terminal.draw(|frame| n(frame))?;
                 }
+                if result_here == InputCommands::StartMathExam {
+                    terminal.draw(|frame| n(frame))?;
+                }
             }
             Err(e) => {
                 break Err(e);
@@ -30,16 +34,34 @@ fn run(terminal: &mut ratatui::DefaultTerminal) -> std::io::Result<()> {
         }
     }
 }
+
 fn handle_events() -> std::io::Result<InputCommands> {
+    match event::read()? {
+        Event::Key(KeyEvent {
+            code,
+            modifiers,
+            kind: KeyEventKind::Press,
+            ..
+        }) => match (code, modifiers) {
+            (KeyCode::Char('c') | KeyCode::Char('d'), KeyModifiers::CONTROL) => {
+                Ok(InputCommands::Quit)
+            }
+            _ => Ok(InputCommands::StartMathExam),
+        },
+        _ => Ok(InputCommands::ContinueAction),
+    }
+}
+/*fn handle_events() -> std::io::Result<InputCommands> {
     match event::read()? {
         Event::Key(key) if key.kind == KeyEventKind::Press => match key.code {
             KeyCode::Char('q') => return Ok(InputCommands::Quit),
+            KeyCode::Char('x') => return Ok(InputCommands::Quit),
             _ => {}
         },
         _ => {}
     }
     Ok(InputCommands::ContinueAction)
-}
+}*/
 
 const ASCII_TITLE_SCREEN: &str = r#"
                 .                                            .
