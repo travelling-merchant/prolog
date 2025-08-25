@@ -1,5 +1,6 @@
 use crossterm::event::{self, Event, KeyCode, KeyEvent, KeyEventKind, KeyModifiers};
 use ratatui::{Frame, text::Text};
+mod exams;
 #[derive(PartialEq)]
 enum InputCommands {
     ContinueAction,
@@ -17,17 +18,15 @@ fn run(terminal: &mut ratatui::DefaultTerminal) -> std::io::Result<()> {
         terminal.draw(|frame| draw_title_screen(frame))?;
         let input_result = handle_events();
         match input_result {
-            Ok(result_here) => {
-                if result_here == InputCommands::Quit {
-                    break Ok(());
-                }
-                if result_here == InputCommands::ContinueAction {
+            Ok(result_here) => match result_here {
+                InputCommands::Quit => break Ok(()),
+                InputCommands::ContinueAction => {
                     terminal.draw(|frame| n(frame))?;
                 }
-                if result_here == InputCommands::StartMathExam {
-                    terminal.draw(|frame| n(frame))?;
+                InputCommands::StartMathExam => {
+                    terminal.draw(|frame| exams::math::render_math(frame))?;
                 }
-            }
+            },
             Err(e) => {
                 break Err(e);
             }
@@ -51,17 +50,6 @@ fn handle_events() -> std::io::Result<InputCommands> {
         _ => Ok(InputCommands::ContinueAction),
     }
 }
-/*fn handle_events() -> std::io::Result<InputCommands> {
-    match event::read()? {
-        Event::Key(key) if key.kind == KeyEventKind::Press => match key.code {
-            KeyCode::Char('q') => return Ok(InputCommands::Quit),
-            KeyCode::Char('x') => return Ok(InputCommands::Quit),
-            _ => {}
-        },
-        _ => {}
-    }
-    Ok(InputCommands::ContinueAction)
-}*/
 
 const ASCII_TITLE_SCREEN: &str = r#"
                 .                                            .
