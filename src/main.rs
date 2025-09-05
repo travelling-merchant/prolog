@@ -1,11 +1,18 @@
 use crossterm::event::{self, Event, KeyCode, KeyEvent, KeyEventKind, KeyModifiers};
 use ratatui::{Frame, text::Text};
 mod exams;
+
 #[derive(PartialEq)]
 enum InputCommands {
     ContinueAction,
     Quit,
     StartMathExam,
+}
+
+#[derive(PartialEq)]
+enum OverallState {
+    TitleScreen,
+    MathExam,
 }
 fn main() -> std::io::Result<()> {
     let mut terminal = ratatui::init();
@@ -14,8 +21,15 @@ fn main() -> std::io::Result<()> {
     result
 }
 fn run(terminal: &mut ratatui::DefaultTerminal) -> std::io::Result<()> {
+    let mut current_state_ffs: OverallState = OverallState::TitleScreen;
+
     loop {
         terminal.draw(|frame| draw_title_screen(frame))?;
+        terminal.draw(|frame| match current_state_ffs {
+            OverallState::TitleScreen => draw_title_screen(frame),
+            OverallState::MathExam => exams::math::render_math(frame),
+        })?;
+
         let input_result = handle_events();
         match input_result {
             Ok(result_here) => match result_here {
@@ -24,7 +38,7 @@ fn run(terminal: &mut ratatui::DefaultTerminal) -> std::io::Result<()> {
                     terminal.draw(|frame| n(frame))?;
                 }
                 InputCommands::StartMathExam => {
-                    terminal.draw(|frame| exams::math::render_math(frame))?;
+                    current_state_ffs = OverallState::MathExam;
                 }
             },
             Err(e) => {
