@@ -1,6 +1,7 @@
 use crossterm::event::{self, Event, KeyCode, KeyEvent, KeyEventKind, KeyModifiers};
 use ratatui::{Frame, text::Text};
 mod exams;
+mod thinking_in_boxes;
 
 #[derive(PartialEq)]
 enum InputCommands {
@@ -15,6 +16,7 @@ enum OverallState {
     MathExam,
 }
 fn main() -> std::io::Result<()> {
+    let exam_data = thinking_in_boxes::everything_is_an_abstraction();
     let mut terminal = ratatui::init();
     let result = run(&mut terminal);
     ratatui::restore();

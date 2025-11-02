@@ -31,9 +31,9 @@ pub fn render_math(frame: &mut Frame) {
         .split(answer_collection[1]);
 
     let answer_option_one =
-        Paragraph::new("B").block(Block::default().title(" Answer ").borders(Borders::ALL));
-    let answer_option_two =
         Paragraph::new("A").block(Block::default().title(" Answer ").borders(Borders::ALL));
+    let answer_option_two =
+        Paragraph::new("b").block(Block::default().title(" Answer ").borders(Borders::ALL));
     let answer_option_three =
         Paragraph::new("C").block(Block::default().title(" Answer ").borders(Borders::ALL));
     let answer_option_four =
