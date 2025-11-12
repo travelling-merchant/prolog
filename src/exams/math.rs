@@ -3,11 +3,13 @@ use ratatui::{
     widgets::{Block, Borders, Paragraph},
 };
 
-use crate::thinking_in_boxes::{AppData, ExamData};
+use crate::thinking_in_boxes::AppData;
 
 pub fn render_math(frame: &mut Frame, app_data: &AppData) {
     let area = frame.area();
-    let test = &app_data.exam_data.questions[0].text;
+    //let test = &app_data.exam_data.questions.question[0].text;
+    // should probably implemt that method on app data not exam data
+    let test = &app_data.exam_data.get_random_data_by_topic().text;
     let chunks = Layout::default()
         .direction(Direction::Vertical)
         .margin(2)

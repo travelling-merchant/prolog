@@ -17,24 +17,37 @@ pub struct Answer {
 }
 #[derive(Debug, Deserialize)]
 pub struct ExamData {
-    pub questions: Vec<Question>,
-    pub answers: Vec<Answer>,
+    pub questions: Questions,
+    pub answers: Answers,
 }
 pub struct AppData {
     pub exam_data: ExamData,
 }
 
+#[derive(Debug, Deserialize)]
+pub struct Questions {
+    pub question: Vec<Question>,
+}
+#[derive(Debug, Deserialize)]
+pub struct Answers {
+    pub answer: Vec<Answer>,
+}
 //pub fn aquire_q_n_a_correspondin_to_subtopic(subtopic: &str) -> (Question, Vec<Answer>) {
 //   let
 //}
 pub fn everything_is_an_abstraction() -> Result<ExamData, Box<dyn std::error::Error>> {
     let free_data = std::fs::read_to_string("./questions.toml")?;
-    let why_are_we_questions: Vec<Question> = toml::from_str(&free_data)?;
+    let why_are_we_questions: Questions = toml::from_str(&free_data)?;
     let free_data = std::fs::read_to_string("./answers.toml")?;
-    let why_are_we_answers: Vec<Answer> = toml::from_str(&free_data)?;
+    let why_are_we_answers: Answers = toml::from_str(&free_data)?;
     let data = ExamData {
         questions: why_are_we_questions,
         answers: why_are_we_answers,
     };
     Ok(data)
+}
+impl ExamData {
+    pub fn get_random_data_by_topic(&self) -> &Question {
+        &self.questions.question[0]
+    }
 }
