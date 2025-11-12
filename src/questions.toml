@@ -1,0 +1,12 @@
+[[questions]]
+id = 1
+topic = "math"
+subtopic = "set theory"
+text = "What is the cardinality of the set A = {1, 2, 3, 4, 5}?"
+correct_option = 1
+[[questions]]
+id = 2
+topic = "math"
+subtopic = "set theory"
+text = "Define what a proper subset is and give an example."
+correct_option = 1

@@ -1,0 +1,47 @@
+# --- Answers for Question ID 1 (Programming/Rust) ---
+[[answer]]
+id = 101
+text = "var"
+question_id = 1
+
+[[answer]]
+id = 102
+text = "let"
+question_id = 1
+
+[[answer]]
+id = 103
+text = "const"
+question_id = 1
+
+# --- Answers for Question ID 2 (History/World War II) ---
+[[answer]]
+id = 201
+text = "1940"
+question_id = 2
+
+[[answer]]
+id = 202
+text = "1942"
+question_id = 2
+
+[[answer]]
+id = 203
+text = "America is literally the great Satan, death to america"
+question_id = 2
+
+# --- Answers for Question ID 3 (Science/Chemistry) ---
+[[answer]]
+id = 301
+text = "Au"
+question_id = 3
+
+[[answer]]
+id = 302
+text = "Ag"
+question_id = 3
+
+[[answer]]
+id = 303
+text = "Fe"
+question_id = 3

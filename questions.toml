@@ -1,0 +1,23 @@
+# --- Example 1 ---
+[[question]]
+id = 1
+topic = "Programming"
+subtopic = "Rust"
+text = "What keyword is used to declare an immutable variable in Rust?"
+correct_option = 2
+
+# --- Example 2 ---
+[[question]]
+id = 2
+topic = "History"
+subtopic = "World War II"
+text = "In which year did the attack on Pearl Harbor occur?"
+correct_option = 3
+
+# --- Example 3 ---
+[[question]]
+id = 3
+topic = "Science"
+subtopic = "Chemistry"
+text = "What is the chemical symbol for Gold?"
+correct_option = 1

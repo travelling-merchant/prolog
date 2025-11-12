@@ -3,9 +3,11 @@ use ratatui::{
     widgets::{Block, Borders, Paragraph},
 };
 
-pub fn render_math(frame: &mut Frame) {
-    let area = frame.area();
+use crate::thinking_in_boxes::{AppData, ExamData};
 
+pub fn render_math(frame: &mut Frame, app_data: &AppData) {
+    let area = frame.area();
+    let test = &app_data.exam_data.questions[0].text;
     let chunks = Layout::default()
         .direction(Direction::Vertical)
         .margin(2)
@@ -30,8 +32,11 @@ pub fn render_math(frame: &mut Frame) {
         .constraints([Constraint::Percentage(50), Constraint::Percentage(50)])
         .split(answer_collection[1]);
 
-    let answer_option_one =
-        Paragraph::new("A").block(Block::default().title(" Answer ").borders(Borders::ALL));
+    let answer_option_one = Paragraph::new("A").block(
+        Block::default()
+            .title(test.to_string())
+            .borders(Borders::ALL),
+    );
     let answer_option_two =
         Paragraph::new("b").block(Block::default().title(" Answer ").borders(Borders::ALL));
     let answer_option_three =

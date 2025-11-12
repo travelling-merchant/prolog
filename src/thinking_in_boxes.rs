@@ -20,6 +20,10 @@ pub struct ExamData {
     pub questions: Vec<Question>,
     pub answers: Vec<Answer>,
 }
+pub struct AppData {
+    pub exam_data: ExamData,
+}
+
 //pub fn aquire_q_n_a_correspondin_to_subtopic(subtopic: &str) -> (Question, Vec<Answer>) {
 //   let
 //}

@@ -1,5 +1,7 @@
 use crossterm::event::{self, Event, KeyCode, KeyEvent, KeyEventKind, KeyModifiers};
 use ratatui::{Frame, text::Text};
+
+use crate::thinking_in_boxes::AppData;
 mod exams;
 mod thinking_in_boxes;
 
@@ -16,20 +18,24 @@ enum OverallState {
     MathExam,
 }
 fn main() -> std::io::Result<()> {
-    let exam_data = thinking_in_boxes::everything_is_an_abstraction();
+    let exam_data =
+        thinking_in_boxes::everything_is_an_abstraction().expect("Failed to load data on startup");
+    let full_data = AppData {
+        exam_data: exam_data,
+    };
     let mut terminal = ratatui::init();
-    let result = run(&mut terminal);
+    let result = run(&mut terminal, &full_data);
     ratatui::restore();
     result
 }
-fn run(terminal: &mut ratatui::DefaultTerminal) -> std::io::Result<()> {
+fn run(terminal: &mut ratatui::DefaultTerminal, app_data: &AppData) -> std::io::Result<()> {
     let mut current_state_ffs: OverallState = OverallState::TitleScreen;
 
     loop {
         terminal.draw(|frame| draw_title_screen(frame))?;
         terminal.draw(|frame| match current_state_ffs {
             OverallState::TitleScreen => draw_title_screen(frame),
-            OverallState::MathExam => exams::math::render_math(frame),
+            OverallState::MathExam => exams::math::render_math(frame, app_data),
         })?;
 
         let input_result = handle_events();
