@@ -11,7 +11,7 @@ correct_option = 2
 id = 2
 topic = "History"
 subtopic = "World War II"
-text = "In which year did the attack on Pearl Harbor occur?"
+text = "In which year did the attack on Pearl Harbor occur? "
 correct_option = 3
 
 # --- Example 3 ---

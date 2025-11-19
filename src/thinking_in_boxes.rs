@@ -1,6 +1,7 @@
 use serde::Deserialize;
+use std::collections::HashMap;
 use toml;
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Eq, Hash, PartialEq)]
 pub struct Question {
     pub id: u16,
     pub topic: String,
@@ -32,9 +33,11 @@ pub struct Questions {
 pub struct Answers {
     pub answer: Vec<Answer>,
 }
-//pub fn aquire_q_n_a_correspondin_to_subtopic(subtopic: &str) -> (Question, Vec<Answer>) {
-//   let
-//}
+#[derive(Debug, Deserialize)]
+pub struct FilteredTopicData {
+    pub answer: Vec<Answer>,
+}
+
 pub fn everything_is_an_abstraction() -> Result<ExamData, Box<dyn std::error::Error>> {
     let free_data = std::fs::read_to_string("./questions.toml")?;
     let why_are_we_questions: Questions = toml::from_str(&free_data)?;
@@ -46,8 +49,28 @@ pub fn everything_is_an_abstraction() -> Result<ExamData, Box<dyn std::error::Er
     };
     Ok(data)
 }
-impl ExamData {
+impl AppData {
+    pub fn get_data_list_for_topic<'a>(
+        &'a self,
+        topic: &str,
+    ) -> HashMap<&'a Question, Vec<&'a Answer>> {
+        let mut subtopic_list: HashMap<&Question, Vec<&Answer>> = HashMap::new();
+        for question in &self.exam_data.questions.question {
+            if question.topic == topic {
+                let answers: Vec<&Answer> = self
+                    .exam_data
+                    .answers
+                    .answer
+                    .iter()
+                    .filter(|a| a.question_id == question.id)
+                    .collect();
+                subtopic_list.insert(question, answers);
+            }
+        }
+
+        subtopic_list
+    }
     pub fn get_random_data_by_topic(&self) -> &Question {
-        &self.questions.question[0]
+        &self.exam_data.questions.question[0]
     }
 }
