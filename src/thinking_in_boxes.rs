@@ -1,3 +1,4 @@
+use rand;
 use serde::Deserialize;
 use std::collections::HashMap;
 use toml;
@@ -33,11 +34,11 @@ pub struct Questions {
 pub struct Answers {
     pub answer: Vec<Answer>,
 }
-#[derive(Debug, Deserialize)]
-pub struct FilteredTopicData {
-    pub answer: Vec<Answer>,
-}
 
+pub struct OneExamQuestionAndAnswers<'a> {
+    pub question: &'a Question,
+    pub answers: Vec<&'a Answer>,
+}
 pub fn everything_is_an_abstraction() -> Result<ExamData, Box<dyn std::error::Error>> {
     let free_data = std::fs::read_to_string("./questions.toml")?;
     let why_are_we_questions: Questions = toml::from_str(&free_data)?;
@@ -50,11 +51,8 @@ pub fn everything_is_an_abstraction() -> Result<ExamData, Box<dyn std::error::Er
     Ok(data)
 }
 impl AppData {
-    pub fn get_data_list_for_topic<'a>(
-        &'a self,
-        topic: &str,
-    ) -> HashMap<&'a Question, Vec<&'a Answer>> {
-        let mut subtopic_list: HashMap<&Question, Vec<&Answer>> = HashMap::new();
+    pub fn get_data_list_for_topic(&self, topic: &str) -> Vec<OneExamQuestionAndAnswers> {
+        let mut topic_list: Vec<OneExamQuestionAndAnswers> = Vec::new();
         for question in &self.exam_data.questions.question {
             if question.topic == topic {
                 let answers: Vec<&Answer> = self
@@ -64,13 +62,22 @@ impl AppData {
                     .iter()
                     .filter(|a| a.question_id == question.id)
                     .collect();
-                subtopic_list.insert(question, answers);
+                let question_n_answers: OneExamQuestionAndAnswers = OneExamQuestionAndAnswers {
+                    question: question,
+                    answers: answers,
+                };
+                topic_list.push(question_n_answers);
             }
         }
 
-        subtopic_list
+        topic_list
     }
-    pub fn get_random_data_by_topic(&self) -> &Question {
-        &self.exam_data.questions.question[0]
+    pub fn get_random_data_by_topic<'a>(
+        &self,
+        q_n_a_collection: &'a [OneExamQuestionAndAnswers<'a>],
+    ) -> &OneExamQuestionAndAnswers<'a> {
+        let max_number = q_n_a_collection.len();
+        let random_number = rand::random_range(0..=max_number);
+        &q_n_a_collection[random_number]
     }
 }

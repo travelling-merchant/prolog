@@ -7,9 +7,10 @@ use crate::thinking_in_boxes::AppData;
 
 pub fn render_math(frame: &mut Frame, app_data: &AppData) {
     let area = frame.area();
-    //let test = &app_data.exam_data.questions.question[0].text;
-    // should probably implemt that method on app data not exam data
-    let test = &app_data.get_random_data_by_topic().text;
+    //let test = &app_data.get_random_data_by_topic().text;
+    let question_list = &app_data.get_data_list_for_topic(&"Math");
+    let current_question = &app_data.get_random_data_by_topic(question_list);
+    let test = current_question.question.text.to_string();
     let chunks = Layout::default()
         .direction(Direction::Vertical)
         .margin(2)
