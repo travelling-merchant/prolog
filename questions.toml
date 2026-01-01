@@ -21,3 +21,10 @@ topic = "Science"
 subtopic = "Chemistry"
 text = "What is the chemical symbol for Gold?"
 correct_option = 1
+# --- Example 4 ---
+[[question]]
+id = 4
+topic = "Math"
+subtopic = "Fuck you"
+text = "what is 1+1 ???????"
+correct_option = 501

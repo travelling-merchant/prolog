@@ -1,6 +1,5 @@
 use rand;
 use serde::Deserialize;
-use std::collections::HashMap;
 use toml;
 #[derive(Debug, Deserialize, Eq, Hash, PartialEq)]
 pub struct Question {
@@ -51,7 +50,7 @@ pub fn everything_is_an_abstraction() -> Result<ExamData, Box<dyn std::error::Er
     Ok(data)
 }
 impl AppData {
-    pub fn get_data_list_for_topic(&self, topic: &str) -> Vec<OneExamQuestionAndAnswers> {
+    pub fn get_data_list_for_topic(&self, topic: &str) -> Vec<OneExamQuestionAndAnswers<'_>> {
         let mut topic_list: Vec<OneExamQuestionAndAnswers> = Vec::new();
         for question in &self.exam_data.questions.question {
             if question.topic == topic {
@@ -77,7 +76,7 @@ impl AppData {
         q_n_a_collection: &'a [OneExamQuestionAndAnswers<'a>],
     ) -> &OneExamQuestionAndAnswers<'a> {
         let max_number = q_n_a_collection.len();
-        let random_number = rand::random_range(0..=max_number);
+        let random_number = rand::random_range(0..max_number);
         &q_n_a_collection[random_number]
     }
 }

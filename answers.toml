@@ -45,3 +45,20 @@ question_id = 3
 id = 303
 text = "Fe"
 question_id = 3
+
+
+# --- Answers for Question ID 3 ( math)---
+[[answer]]
+id = 501
+text = "2"
+question_id = 4
+
+[[answer]]
+id = 502
+text = "Fuck you"
+question_id = 4
+
+[[answer]]
+id = 503
+text = "meow"
+question_id = 4

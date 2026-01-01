@@ -1,11 +1,13 @@
+use crossterm::style::Color;
 use ratatui::{
     prelude::*,
     widgets::{Block, Borders, Paragraph},
 };
 
+use crate::MathState;
 use crate::thinking_in_boxes::AppData;
 
-pub fn render_math(frame: &mut Frame, app_data: &AppData) {
+pub fn render_math(frame: &mut Frame, app_data: &AppData, state: &MathState) {
     let area = frame.area();
     //let test = &app_data.get_random_data_by_topic().text;
     let question_list = &app_data.get_data_list_for_topic(&"Math");
@@ -17,7 +19,7 @@ pub fn render_math(frame: &mut Frame, app_data: &AppData) {
         .constraints([Constraint::Percentage(40), Constraint::Percentage(60)])
         .split(area);
 
-    let question = Paragraph::new("What is anything?")
+    let question = Paragraph::new(current_question.question.text.to_string())
         .block(Block::default().title(" Question ").borders(Borders::ALL));
     frame.render_widget(question, chunks[0]);
     let answer_collection = Layout::default()
@@ -35,13 +37,19 @@ pub fn render_math(frame: &mut Frame, app_data: &AppData) {
         .constraints([Constraint::Percentage(50), Constraint::Percentage(50)])
         .split(answer_collection[1]);
 
+    //let selected_style = Style::default().bg(Color::Blue).fg(Color::White);
+    let normal_style = Style::default();
     let answer_option_one = Paragraph::new("A").block(
         Block::default()
             .title(test.to_string())
             .borders(Borders::ALL),
     );
-    let answer_option_two =
-        Paragraph::new("b").block(Block::default().title(" Answer ").borders(Borders::ALL));
+    let answer_option_two = Paragraph::new("b").block(
+        Block::default()
+            .title(" Answer ")
+            .borders(Borders::ALL)
+            .bg(ratatui::prelude::Color::Red),
+    );
     let answer_option_three =
         Paragraph::new("C").block(Block::default().title(" Answer ").borders(Borders::ALL));
     let answer_option_four =

@@ -10,12 +10,20 @@ enum InputCommands {
     ContinueAction,
     Quit,
     StartMathExam,
+    MoveUp,
+    MoveDown,
+    MoveRight,
+    MoveLeft,
 }
 
 #[derive(PartialEq)]
 enum OverallState {
     TitleScreen,
-    MathExam,
+    MathExam(MathState),
+}
+#[derive(PartialEq, Default)]
+pub struct MathState {
+    pub selected: usize,
 }
 fn main() -> std::io::Result<()> {
     let exam_data =
@@ -33,26 +41,49 @@ fn run(terminal: &mut ratatui::DefaultTerminal, app_data: &AppData) -> std::io::
 
     loop {
         terminal.draw(|frame| draw_title_screen(frame))?;
-        terminal.draw(|frame| match current_state_ffs {
+        terminal.draw(|frame| match &current_state_ffs {
             OverallState::TitleScreen => draw_title_screen(frame),
-            OverallState::MathExam => exams::math::render_math(frame, app_data),
+            OverallState::MathExam(state) => exams::math::render_math(frame, app_data, &state),
         })?;
 
-        let input_result = handle_events();
-        match input_result {
-            Ok(result_here) => match result_here {
+        let input_result = handle_events()?;
+        current_state_ffs = match current_state_ffs {
+            OverallState::TitleScreen => match input_result {
                 InputCommands::Quit => break Ok(()),
-                InputCommands::ContinueAction => {
-                    terminal.draw(|frame| n(frame))?;
-                }
-                InputCommands::StartMathExam => {
-                    current_state_ffs = OverallState::MathExam;
-                }
+                InputCommands::StartMathExam => OverallState::MathExam(MathState::default()),
+                _ => OverallState::TitleScreen,
             },
-            Err(e) => {
-                break Err(e);
-            }
-        }
+
+            OverallState::MathExam(mut state) => match input_result {
+                InputCommands::Quit => break Ok(()),
+                InputCommands::MoveUp => {
+                    if state.selected >= 2 {
+                        state.selected -= 2;
+                    }
+                    OverallState::MathExam(state)
+                }
+                InputCommands::MoveDown => {
+                    if state.selected < 2 {
+                        state.selected += 2;
+                    }
+                    OverallState::MathExam(state)
+                }
+                InputCommands::MoveLeft => {
+                    if state.selected % 2 == 1 {
+                        state.selected -= 1;
+                    }
+                    OverallState::MathExam(state)
+                }
+                InputCommands::MoveRight => {
+                    if state.selected % 2 == 0 && state.selected < 3 {
+                        state.selected += 1;
+                    }
+                    OverallState::MathExam(state)
+                }
+
+                _ => OverallState::MathExam(state),
+            },
+        };
     }
 }
 
@@ -66,6 +97,18 @@ fn handle_events() -> std::io::Result<InputCommands> {
         }) => match (code, modifiers) {
             (KeyCode::Char('c') | KeyCode::Char('d'), KeyModifiers::CONTROL) => {
                 Ok(InputCommands::Quit)
+            }
+            (KeyCode::Char('k') | KeyCode::Char('w'), KeyModifiers::NONE) => {
+                Ok(InputCommands::MoveUp)
+            }
+            (KeyCode::Char('h') | KeyCode::Char('a'), KeyModifiers::NONE) => {
+                Ok(InputCommands::MoveLeft)
+            }
+            (KeyCode::Char('l') | KeyCode::Char('d'), KeyModifiers::NONE) => {
+                Ok(InputCommands::MoveRight)
+            }
+            (KeyCode::Char('j') | KeyCode::Char('s'), KeyModifiers::NONE) => {
+                Ok(InputCommands::MoveDown)
             }
             _ => Ok(InputCommands::StartMathExam),
         },
